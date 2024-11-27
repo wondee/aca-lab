@@ -1,0 +1,37 @@
+zuul:
+  prefix: /api
+  ignoredServices: '*'
+  routes:
+    vets-service: /vet/**
+    visits-service: /visit/**
+    customers-service: /customer/**
+    api-gateway: /gateway/**
+
+server:
+  port: 8080
+  # The stop processing uses a timeout which provides a grace period during which existing requests will be allowed to complete but no new requests will be permitted
+  shutdown: graceful
+  compression:
+    enabled: true
+    mime-types: application/json,text/css,application/javascript
+    min-response-size: 2048
+
+spring:
+  message:
+    basename: messages/messages
+  cloud:
+    loadbalancer:
+      cache:
+        enabled: false
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+  zipkin:
+    baseUrl: http://tracing-server:9411
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://discovery-server:8761/eureka/
